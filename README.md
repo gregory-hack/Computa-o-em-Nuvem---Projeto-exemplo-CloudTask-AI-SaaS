@@ -5,7 +5,7 @@
 
 <!-- Título e breve descrição do repositório -->
 <div align="center">
-  <h1>Projeto Coomputação em Nuvem - CloudTask AI SaaS —</h1>
+  <h1>Projeto Computação em Nuvem - CloudTask AI SaaS —</h1>
   <p><b>— cobre as Aulas 11 e 12; consolida toda a jornada das 6 semanas.</b></p>
   <p>API FastAPI + PostgreSQL + CRUD com <b>uploads S3/local</b>, <b>Kubernetes (Kind→EKS)</b>, <b>HPA</b> e <b>eventos (DynamoDB)</b> — agora fechando com <b>Infraestrutura como Código (AWS CDK)</b> (Aula 11) e os <b>materiais de entrega final</b> (Aula 12).</p>
 </div>
