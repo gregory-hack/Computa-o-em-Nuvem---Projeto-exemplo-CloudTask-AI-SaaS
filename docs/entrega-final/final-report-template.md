@@ -21,8 +21,7 @@ O CloudTask AI SaaS é uma aplicação cloud-native moderna desenvolvida para o 
 
 | Semana | O que foi implementado| Evidência (print / comando / endpoint) |
 | --- | --- | --- |
-| 1 — FastAPI + Docker | API REST funcionando com FASTapi (GET/, GET/health, CRUD inicial) containeirizada com Docker (Dockher file) e ambiente Dev Container | 
-curl http://localhost:8000/health |
+| 1 — FastAPI + Docker | API REST funcionando com FASTapi (GET/, GET/health, CRUD inicial) containeirizada com Docker (Dockher file) e ambiente Dev Container | curl http://localhost:8000/health |
 | 2 — PostgreSQL + config | Integração com PostgresSQL via Docker Compose, modelo TASK, configuração de variáveis (.env) com pydantic settings e preparação para HTTPS/TLS| curl http://localhost:8000/tasks |
 | 3 — S3 + Kind |Upload de arquivos (POST/uploads) integrados ao S3 da Amazon com URL pré-assinada e fallback local, além do uso do KIND (Kubernetes)localmente para orquestração dos contêineres via manifests (infra/k8s/) | Validado por meio do endpoint POST /uploads, com confirmação do armazenamento do arquivo no Amazon S3. |
 | 4 — ECR + EKS | Foi criado um repositório no Amazon ECR para armazenamento das imagens Docker da aplicação. A imagem foi construída localmente e enviada manualmente ao repositório utilizando Docker e AWS CLI, permitindo armazenar e versionar a aplicação em um registro de contêineres na AWS. Devido às limitações do ambiente AWS Academy, o deploy em Amazon EKS foi adaptado conforme orientação da disciplina, sendo mantido o foco na publicação da imagem no ECR. | `<...>` |
@@ -86,18 +85,20 @@ PASSO A PASSO (Execução Localmente)
 docker compose up -d --build
 3 - Verificar API e Banco de dados, se estão rodando:
 docker ps
-# Deve listar cloudtask-api (porta 8000) e cloudtask-db (porta 5432)
-4 - Testar a Saúde da API:
+- deve listar cloudtask-api (porta 8000) e cloudtask-db (porta 5432)
+
+ - Testar a Saúde da API:
 curl http://localhost:8000/health
 # Resposta esperada: {"status":"ok"}
-5 - Acessar documentação (Swagger UI)
+
+ - Acessar documentação (Swagger UI)
 No navegador: http://localhost:8000/docs
-6 - Derrubar o Ambiente e limpar recursos
+
+ - Derrubar o Ambiente e limpar recursos
     docker compose down
+    
 
-```
-
-## 6. Decisões e trade-offs
+  # 6. Decisões e trade-offs
 
 Durante o desenvolvimento do projeto, buscou-se adotar uma arquitetura baseada em serviços da AWS, conciliando simplicidade, escalabilidade e os recursos disponíveis no ambiente AWS Academy.
 
@@ -113,18 +114,17 @@ Como principal adaptação do projeto, o deploy originalmente previsto para Amaz
 
 Essa adaptação representou um trade-off entre a orquestração automática oferecida pelo Kubernetes e uma infraestrutura baseada em máquinas virtuais, porém permitiu validar todos os componentes essenciais da arquitetura proposta utilizando os recursos disponíveis no laboratório.
 
-## 7. Custos
-Recursos que gerariam gastos na AWS:
  ## 7. Custos
 
 - **Recursos utilizados:** Amazon EC2 (3 instâncias), Amazon RDS PostgreSQL, Amazon S3, Amazon DynamoDB, Amazon ECR, CloudWatch e componentes da VPC.
 
 - **Estimativa do período:** Os recursos permaneceram ativos apenas durante os testes e validações da aplicação. Considerando o tempo de utilização, o custo estimado seria de aproximadamente **US$ 0,10 a US$ 0,30**, caso fossem executados em uma conta AWS convencional. No ambiente AWS Academy não foi possível consultar os valores reais, pois os serviços **Cost Explorer** e **AWS Budgets** estavam indisponíveis.
 
-- **Confirmação de limpeza:** Após a conclusão dos testes foi executado o comando `./semana-06-cdk-deploy.sh destroy`, removendo as stacks criadas pelo AWS CDK. Também foi realizada a limpeza dos recursos remanescentes, incluindo o bucket Amazon S3, evitando custos adicionais.
+- **Confirmação de limpeza:** Após a conclusão dos testes foi executado o comando ./semana-06-cdk-deploy.sh destroy, removendo as stacks criadas pelo AWS CDK. Também foi realizada a limpeza dos recursos remanescentes, incluindo o bucket Amazon S3, evitando custos adicionais.
 
 ## 8. LGPD e segurança
-## 1. Dados pessoais — mapeamento
+
+## Dados pessoais — mapeamento
 
 - [X] Sei **quais** dados pessoais a aplicação coleta (no CloudTask: praticamente
       nenhum — tarefas são texto livre; cuidado se o usuário digitar dados
@@ -132,41 +132,41 @@ Recursos que gerariam gastos na AWS:
 - [X] Sei **onde** cada dado é armazenado (PostgreSQL/RDS, S3, DynamoDB).
 - [ ] Sei **por quanto tempo** os dados ficam (retenção) e **como** são apagados.
 
-## 2. Bases legais e finalidade (LGPD art. 6–11)
+## Bases legais e finalidade (LGPD art. 6–11)
 
 - [X] A coleta tem **finalidade específica** e informada.
 - [X] Há **base legal** (consentimento, execução de contrato, etc.) — em projeto
       didático, documentar a finalidade já cumpre o exercício.
 
-## 3. Segurança técnica (LGPD art. 46 — medidas de segurança)
+## Segurança técnica (LGPD art. 46 — medidas de segurança)
 
 - [X] **Em trânsito:** TLS/HTTPS na borda (ALB + ACM). Sem dado em HTTP aberto.
 - [x] **Em repouso:** criptografia ativa — S3 (`S3_MANAGED`), RDS (encryption),
       DynamoDB (padrão). Confirme nos recursos criados.
-- [x] **Segredos** não estão no código nem no git: `.env` e `secret.yaml` no
-      `.gitignore`; em produção, Secrets Manager / SSM.
+- [x] **Segredos** não estão no código nem no git: .env e secret.yaml no
+      .gitignore; em produção, Secrets Manager / SSM.
 - [x] **Bucket S3 privado** (Block Public Access), acesso só por URL pré-assinada.
 - [x] **Credenciais temporárias** (roles) em vez de chaves fixas no deploy.
 - [ ] **Menor privilégio**: a app/role acessa só o que precisa.
 
-## 4. Direitos do titular (LGPD art. 18)
+## Direitos do titular (LGPD art. 18)
 
 - [X] Existe caminho para **acessar** os dados de um titular (ex.: consultar/
       exportar suas tarefas).
 - [X] Existe caminho para **excluir** (DELETE de tarefas + remoção de uploads).
 - [X] Logs de eventos (DynamoDB) **não** guardam dado sensível desnecessário.
 
-## 5. Operação e incidentes
+## Operação e incidentes
 
 - [ ] **Backups** definidos (RDS tem snapshot automático; S3 versionado).
 - [ ] Sei **como reagir** a um vazamento (revogar credencial, rotacionar segredo).
 - [ ] **Cost/uso** monitorado (Budgets) — evita surpresa e uso indevido.
 
-## 6. Higiene de projeto
+## Higiene de projeto
 
 - [x] Nenhuma **conta AWS real** ou **segredo** commitado (revisar histórico).
 - [x] Recursos de teste **destruídos** após cada aula (sem dado órfão na nuvem).
-- [x] `README` e docs **não** expõem endpoints/credenciais internos.
+- [x] README e docs **não** expõem endpoints/credenciais internos.
 
 ---
 ## 9. Dificuldades e aprendizados
@@ -181,8 +181,8 @@ Como principal aprendizado, o projeto proporcionou uma visão prática sobre com
 
 ## 10. Anexos
 
-- [X] `lgpd-checklist.md` preenchido
-- [ ] `deployment-checklist.md` (sweep de limpeza) preenchido
+- [X] lgpd-checklist.md preenchido
+- [ ] deployment-checklist.md` (sweep de limpeza) preenchido
 - [ ] Prints / logs das evidências da seção 3
 
 11 - Prints/logs das evidências Semana a Semana.
