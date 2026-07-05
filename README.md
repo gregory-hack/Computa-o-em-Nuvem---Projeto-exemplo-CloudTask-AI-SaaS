@@ -6,7 +6,7 @@
 <!-- Título e breve descrição do repositório -->
 <div align="center">
   <h1>Projeto Computação em Nuvem - CloudTask AI SaaS —</h1>
-  <p><b>— cobre as Aulas 11 e 12; consolida toda a jornada das 6 semanas.</b></p>
+  <p><b>— Trabalho avaliativo da Disciplina de Computação em Nuvem.</b></p>
   <p>👉 <b><a href="docs/entrega-final/final-report-template.md"> ACESSE O RELATÓRIO FINAL</a></b> 👈</p>
   <p>API FastAPI + PostgreSQL + CRUD com <b>uploads S3/local</b>, <b>Kubernetes (Kind→EKS)</b>, <b>HPA</b> e <b>eventos (DynamoDB)</b> — agora fechando com <b>Infraestrutura como Código (AWS CDK)</b> (Aula 11) e os <b>materiais de entrega final</b> (Aula 12).</p>
 </div>
@@ -245,12 +245,6 @@ cdk deploy --all          # (conta própria) cria S3 + ECR + VPC
 cdk destroy --all         # 🔥 apaga tudo
 ```
 Cada branch `aula-XX-final` contém **somente o estado acumulado até aquela aula** e funciona de forma independente.
-
-## Participantes
-
-| [<img src="https://avatars3.githubusercontent.com/u/60905310?s=460&v=4" width="75px;"/>](https://github.com/guipatriota) |
-| :------------------------------------------------------------------------------------------------------------------------: |
-| [Prof. Guilherme Patriota](https://github.com/guipatriota) |
 
 ## Estrutura final do projeto (referência — aula 12)
 
