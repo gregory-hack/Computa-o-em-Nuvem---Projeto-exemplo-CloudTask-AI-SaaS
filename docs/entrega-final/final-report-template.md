@@ -17,7 +17,6 @@ O CloudTask AI SaaS é uma aplicação cloud-native moderna desenvolvida para o 
 
 | Semana | O que foi implementado| Evidência (print / comando / endpoint) | 
 | :---: | :--- | :--- | :--- |
-
 | 1 — FastAPI + Docker | API REST funcionando com FASTapi (GET/, GET/health, CRUD inicial) containeirizada com Docker (Dockher file) e ambiente Dev Container | curl http://localhost:8000/health |
 | 2 — PostgreSQL + config | Integração com PostgresSQL via Docker Compose, modelo TASK, configuração de variáveis (.env) com pydantic settings e preparação para HTTPS/TLS| curl http://localhost:8000/tasks |
 | 3 — S3 + Kind |Upload de arquivos (POST/uploads) integrados ao S3 da Amazon com URL pré-assinada e fallback local, além do uso do KIND (Kubernetes)localmente para orquestração dos contêineres via manifests (infra/k8s/) | Validado por meio do endpoint POST /uploads, com confirmação do armazenamento do arquivo no Amazon S3. |
