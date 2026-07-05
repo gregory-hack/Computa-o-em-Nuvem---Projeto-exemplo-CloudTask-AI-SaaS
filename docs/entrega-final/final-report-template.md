@@ -22,34 +22,36 @@ O CloudTask AI SaaS é uma aplicação cloud-native moderna desenvolvida para o 
 | 3 — S3 + Kind |Upload de arquivos (POST/uploads) integrados ao S3 da Amazon com URL pré-assinada e fallback local, além do uso do KIND (Kubernetes)localmente para orquestração dos contêineres via manifests (infra/k8s/) | Validado por meio do endpoint POST /uploads, com confirmação do armazenamento do arquivo no Amazon S3. |
 | 4 — ECR + EKS | Foi criado um repositório no Amazon ECR para armazenamento das imagens Docker da aplicação. A imagem foi construída localmente e enviada manualmente ao repositório utilizando Docker e AWS CLI, permitindo armazenar e versionar a aplicação em um registro de contêineres na AWS. Devido às limitações do ambiente AWS Academy, o deploy em Amazon EKS foi adaptado conforme orientação da disciplina, sendo mantido o foco na publicação da imagem no ECR. | aws ecr create-repository --repository-name cloudtask-api --region us-east-1 |
 | 5 — HPA + DynamoDB | Foi implementado o registro de eventos da aplicação utilizando o Amazon DynamoDB como banco de dados NoSQL, com suporte a fallback local em JSON. Os eventos passaram a ser registrados automaticamente durante as operações do CRUD de tarefas, sendo validados por meio dos endpoints da API e da consulta à tabela no DynamoDB. Os conceitos de escalabilidade com HPA foram estudados durante a disciplina, porém sua implantação prática foi adaptada devido às limitações do ambiente AWS Academy. | Ver Comando abaixo |
-| 6 — CDK + entrega | Foi implementada a infraestrutura como código utilizando AWS CDK em Python, automatizando o provisionamento de recursos como Amazon S3, Amazon ECR, Amazon DynamoDB, VPC, CloudWatch, Amazon RDS e a arquitetura final composta por três instâncias EC2 (Edge, API e Grafana). Também foram validadas a autenticação por JWT, o acesso seguro via HTTPS com certificado válido, o Swagger protegido por autenticação e o deploy completo da aplicação. Após os testes, toda a infraestrutura foi removida utilizando o processo de destroy, garantindo a liberação dos recursos criados. | ./semana-06-cdk-deploy.sh deploy  | e | cd infra/cdk && ./semana-06-cdk-deploy.sh destroy|
+| 6 — CDK + entrega | Foi implementada a infraestrutura como código utilizando AWS CDK em Python, automatizando o provisionamento de recursos como Amazon S3, Amazon ECR, Amazon DynamoDB, VPC, CloudWatch, Amazon RDS e a arquitetura final composta por três instâncias EC2 (Edge, API e Grafana). Também foram validadas a autenticação por JWT, o acesso seguro via HTTPS com certificado válido, o Swagger protegido por autenticação e o deploy completo da aplicação. Após os testes, toda a infraestrutura foi removida utilizando o processo de destroy, garantindo a liberação dos recursos criados. | ./semana-06-cdk-deploy.sh deploy  e ./semana-06-cdk-deploy.sh destroy|
 
-Comando de criação da tabela DynamoDB: Semana 5
+Comando de criação da tabela DynamoDB:
+
 aws dynamodb create-table --table-name cloudtask-events \  --attribute-definitions AttributeName=id,AttributeType=S \ --key-schema AttributeName=id,KeyType=HASH \
  --billing-mode PAY_PER_REQUEST --region us-east-1
 aws dynamodb wait table-exists --table-name cloudtask-events
 
 ## 4. Arquitetura
 
-                        Internet (HTTPS)
-                                 │
-                                 ▼
-                     sslip.io (DNS dinâmico)
-                                 │
-                                 ▼
-                  EC2 1 - Edge (Caddy + Frontend)
-                  HTTPS + Proxy Reverso (/api /grafana)
-                                 │
-               ┌─────────────────┴─────────────────┐
-               │                                   │
-               ▼                                   ▼
-      EC2 2 - API (FastAPI)              EC2 3 - Grafana
-               │
-        ┌──────┼────────────────────────────────────┐
-        │      │                    │               │
-        ▼      ▼                    ▼               ▼
- Amazon RDS   Amazon S3      Amazon DynamoDB   CloudWatch
-(PostgreSQL) (Uploads)      (Eventos/Logs)   (Logs/Métricas)
+                      Internet(HTTPS)
+                             │
+                             ▼
+                    sslip.io (DNS)
+                             │
+                  HTTP → HTTPS (308)
+                             │
+                             ▼
+              EC2 1 - Edge (Caddy + Frontend)
+               HTTPS (Certificado TLS)
+                     HTTP interno
+                             │
+              ┌──────────────┴──────────────┐
+              ▼                             ▼
+     EC2 2 - API (FastAPI)         EC2 3 - Grafana
+              │
+      ┌───────┼──────────────┬───────────────┐
+      ▼       ▼              ▼               ▼
+ Amazon RDS Amazon S3  Amazon DynamoDB  CloudWatch
+(Postgres) (Uploads)  (Eventos/Logs) (Logs/Métricas)
 
 
 Camadas da Arquitetura
@@ -74,13 +76,13 @@ O projeto utilizou CloudWatch para centralização de logs e métricas, além de
 Segurança e Controle de Acesso:
 O acesso à API foi protegido por autenticação baseada em JWT (JSON Web Token). Toda a comunicação ocorreu por HTTPS, e o Swagger foi protegido por autenticação. O acesso aos serviços da AWS foi realizado utilizando as permissões disponibilizadas pelo ambiente AWS Academy e pela infraestrutura criada com o AWS CDK.
 
-## 5. Como executar (reprodutível)
+## 5. Como executar 
 Pré - requisitos:
 - Docker e Docker Desktop instalados
 - Git instalado
 - Vscode com extensão Dev Containers (recomendado)
 
-PASSO A PASSO (Execução Localmente)
+# PASSO A PASSO (Execução Localmente)
 1  - Clonar o repositório da turma:
 2 - Subir os contêineres
 docker compose up -d --build
@@ -95,8 +97,7 @@ curl http://localhost:8000/health
  - Acessar documentação (Swagger UI)
 No navegador: http://localhost:8000/docs
 
- - Derrubar o Ambiente e limpar recursos
-    docker compose down
+ - Derrubar o Ambiente e limpar recursos: docker compose down
     
 
   # 6. Decisões e trade-offs
@@ -186,17 +187,18 @@ Como principal aprendizado, o projeto proporcionou uma visão prática sobre com
 - [X] deployment-checklist.md` (sweep de limpeza) preenchido
 - [X] Prints / logs das evidências da seção 3
 
-11 - Prints/logs das evidências Semana a Semana.
+1.1 - Prints/logs das evidências Semana a Semana.
 Semana 1 - Endpoint GET Health funcionando 
 ![alt text](image.png)
 Semana 2 - Inserção do CRUD de tarefas:
 ![alt text](image-1.png)
-Semana - 3 KIND LOCAL - <img width="1899" height="881" alt="Captura de tela 2026-07-04 230533" src="https://github.com/user-attachments/assets/1a81e894-6525-4b78-9683-349ed0c6c7d4" />
+Semana - 3 KIND LOCAL e S3 - <img width="1909" height="860" alt="Captura de tela 2026-07-04 142457" src="https://github.com/user-attachments/assets/4818b2ca-fac0-4590-a790-ea395086e0a3" />
 Semana - 4 ECR + EKS. Como não foi possível mais utlizar o EKS por limitação do Academy, fica somente a imagem no ECR:
 <img width="1899" height="881" alt="Captura de tela 2026-07-04 230533" src="https://github.com/user-attachments/assets/011877af-507d-406e-8e53-293aa5ab1fbd" />
 Semana - 5 HPA + Dynamo DB. Não foi possível rodar o HPA por limitação da Academy, mas ainda assim foi posível criar a tabela no dynamo DB:
 ![alt text](<Captura de tela 2026-07-03 184231-1.png>)
-Semana - 6  CDK + ENTREGA FINAL: ./semana-06-cdk-deploy.sh deploy  <img width="765" height="850" alt="image" src="https://github.com/user-attachments/assets/cd92bd3c-3035-48b5-8926-f7702ef30c0e" />
-Saída./semana-06-cdk-deploy.sh destroy 
-<img width="727" height="301" alt="Captura de tela 2026-07-04 234056" src="https://github.com/user-attachments/assets/aefee323-73df-4e4b-9e77-18979041b5fd" />
+Semana - 6  CDK + ENTREGA FINAL: ./semana-06-cdk-deploy.sh deploy  
+<img width="765" height="850" alt="image" src="https://github.com/user-attachments/assets/cd92bd3c-3035-48b5-8926-f7702ef30c0e" />
+<img width="727" height="301" alt="Captura de tela 2026-07-04 234056" src="https://github.com/user-attachments/assets/3d42e3af-d14a-4ba2-ae50-5f84c0c087c6" />
+semana-06-cdk-deploy.sh destroy 
 
