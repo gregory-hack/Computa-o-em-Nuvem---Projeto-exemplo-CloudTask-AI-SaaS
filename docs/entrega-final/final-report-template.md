@@ -183,19 +183,20 @@ Como principal aprendizado, o projeto proporcionou uma visão prática sobre com
 ## 10. Anexos
 
 - [X] lgpd-checklist.md preenchido
-- [ ] deployment-checklist.md` (sweep de limpeza) preenchido
-- [ ] Prints / logs das evidências da seção 3
+- [X] deployment-checklist.md` (sweep de limpeza) preenchido
+- [X] Prints / logs das evidências da seção 3
 
 11 - Prints/logs das evidências Semana a Semana.
 Semana 1 - Endpoint GET Health funcionando 
 ![alt text](image.png)
 Semana 2 - Inserção do CRUD de tarefas:
 ![alt text](image-1.png)
-Semana - 3 KIND LOCAL - c:\Users\grego\Desktop\Prints Trabalho de Nuvem\Captura de tela 2026-07-04 142457.png
+Semana - 3 KIND LOCAL - <img width="1899" height="881" alt="Captura de tela 2026-07-04 230533" src="https://github.com/user-attachments/assets/1a81e894-6525-4b78-9683-349ed0c6c7d4" />
 Semana - 4 ECR + EKS. Como não foi possível mais utlizar o EKS por limitação do Academy, fica somente a imagem no ECR:
 <img width="1899" height="881" alt="Captura de tela 2026-07-04 230533" src="https://github.com/user-attachments/assets/011877af-507d-406e-8e53-293aa5ab1fbd" />
 Semana - 5 HPA + Dynamo DB. Não foi possível rodar o HPA por limitação da Academy, mas ainda assim foi posível criar a tabela no dynamo DB:
 ![alt text](<Captura de tela 2026-07-03 184231-1.png>)
 Semana - 6  CDK + ENTREGA FINAL: ./semana-06-cdk-deploy.sh deploy  <img width="765" height="850" alt="image" src="https://github.com/user-attachments/assets/cd92bd3c-3035-48b5-8926-f7702ef30c0e" />
-Saída./semana-06-cdk-deploy.sh destroy <img width="727" height="301" alt="Captura de tela 2026-07-04 234056" src="https://github.com/user-attachments/assets/aefee323-73df-4e4b-9e77-18979041b5fd" />
+Saída./semana-06-cdk-deploy.sh destroy 
+<img width="727" height="301" alt="Captura de tela 2026-07-04 234056" src="https://github.com/user-attachments/assets/aefee323-73df-4e4b-9e77-18979041b5fd" />
 
