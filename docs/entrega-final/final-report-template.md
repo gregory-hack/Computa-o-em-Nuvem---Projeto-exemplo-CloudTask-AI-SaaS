@@ -16,14 +16,14 @@ O CloudTask AI SaaS é uma aplicação cloud-native moderna desenvolvida para o 
 ## 3. O que foi implementado (por semana)
 
 | Semana | O que foi implementado| Evidência (print / comando / endpoint) |
-| --- | --- | --- |
 | 1 — FastAPI + Docker | API REST funcionando com FASTapi (GET/, GET/health, CRUD inicial) containeirizada com Docker (Dockher file) e ambiente Dev Container | curl http://localhost:8000/health |
 | 2 — PostgreSQL + config | Integração com PostgresSQL via Docker Compose, modelo TASK, configuração de variáveis (.env) com pydantic settings e preparação para HTTPS/TLS| curl http://localhost:8000/tasks |
 | 3 — S3 + Kind |Upload de arquivos (POST/uploads) integrados ao S3 da Amazon com URL pré-assinada e fallback local, além do uso do KIND (Kubernetes)localmente para orquestração dos contêineres via manifests (infra/k8s/) | Validado por meio do endpoint POST /uploads, com confirmação do armazenamento do arquivo no Amazon S3. |
 | 4 — ECR + EKS | Foi criado um repositório no Amazon ECR para armazenamento das imagens Docker da aplicação. A imagem foi construída localmente e enviada manualmente ao repositório utilizando Docker e AWS CLI, permitindo armazenar e versionar a aplicação em um registro de contêineres na AWS. Devido às limitações do ambiente AWS Academy, o deploy em Amazon EKS foi adaptado conforme orientação da disciplina, sendo mantido o foco na publicação da imagem no ECR. | aws ecr create-repository --repository-name cloudtask-api --region us-east-1 |
 | 5 — HPA + DynamoDB | Foi implementado o registro de eventos da aplicação utilizando o Amazon DynamoDB como banco de dados NoSQL, com suporte a fallback local em JSON. Os eventos passaram a ser registrados automaticamente durante as operações do CRUD de tarefas, sendo validados por meio dos endpoints da API e da consulta à tabela no DynamoDB. Os conceitos de escalabilidade com HPA foram estudados durante a disciplina, porém sua implantação prática foi adaptada devido às limitações do ambiente AWS Academy. |
 
-Comando de criação da tabela DynamoDB: aws dynamodb create-table --table-name cloudtask-events \  --attribute-definitions AttributeName=id,AttributeType=S \ --key-schema AttributeName=id,KeyType=HASH \
+Comando de criação da tabela DynamoDB: Semana 5
+aws dynamodb create-table --table-name cloudtask-events \  --attribute-definitions AttributeName=id,AttributeType=S \ --key-schema AttributeName=id,KeyType=HASH \
  --billing-mode PAY_PER_REQUEST --region us-east-1
 aws dynamodb wait table-exists --table-name cloudtask-events
 
