@@ -1,13 +1,13 @@
 # Relatório final — CloudTask AI SaaS
 ---
-
 ## 1. Identificação
-
-- **Aluno(a):** Gregory Antunes Hack
-- **RU / matrícula:** 3699000
-- **Disciplina:** Computação em Nuvem — UNINTER
-- **Repositório:** https://github.com/gregory-hack/Computa-o-em-Nuvem---Projeto-exemplo-CloudTask-AI-SaaS.git
-- **Data:** 04/07/2026
+| | |
+|---|---|
+| **Aluno(a):** | Gregory Antunes Hack |
+| **RU / Matrícula:** | 3699000 |
+| **Disciplina:** | Computação em Nuvem — UNINTER |
+| **Repositório:** | https://github.com/gregory-hack/Computa-o-em-Nuvem---Projeto-exemplo-CloudTask-AI-SaaS.git |
+| **Data:** | 04/07/2026 |
 
 ## 2. Resumo do projeto
 
